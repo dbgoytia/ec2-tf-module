@@ -49,6 +49,8 @@ resource "aws_instance" "this" {
   subnet_id                   = var.subnet_id
   associate_public_ip_address = var.associate_public_ip_address
 
+  # ssm configuration
+  iam_instance_profile = aws_iam_instance_profile.this
 
   user_data = var.user_data
 
