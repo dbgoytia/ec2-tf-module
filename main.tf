@@ -50,7 +50,7 @@ resource "aws_instance" "this" {
   associate_public_ip_address = var.associate_public_ip_address
 
   # ssm configuration
-  iam_instance_profile = aws_iam_instance_profile.this
+  iam_instance_profile = aws_iam_instance_profile.this.id
 
   user_data = var.user_data
 
