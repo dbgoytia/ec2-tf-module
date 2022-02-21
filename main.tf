@@ -1,6 +1,6 @@
 # SSM instance role
 
-resource "aws_iam_role" "ssm_role" {
+resource "aws_iam_role" "instance_role" {
   name = format(
     "%s-ssm-role",
     var.name,
@@ -25,8 +25,16 @@ EOF
 
 # Core SSM functionallity
 resource "aws_iam_role_policy_attachment" "this" {
-  role       = aws_iam_role.ssm_role.name
+  role       = aws_iam_role.instance_role.name
   policy_arn = "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
+}
+
+resource "aws_iam_role_policy_attachment" "cwatch_agent_policy" {
+  count = var.cloudwatch_agent_enabled ? 1 : 0
+
+  role       = aws_iam_role.instance_role.name
+  policy_arn = "arn:aws:iam::aws:policy/CloudWatchAgentServerPolicy"
+
 }
 
 # EC2 Instance profile for SSM
@@ -35,7 +43,7 @@ resource "aws_iam_instance_profile" "this" {
     "%s-instance-profile",
     var.name,
   )
-  role = aws_iam_role.ssm_role.name
+  role = aws_iam_role.instance_role.name
 }
 
 resource "aws_instance" "this" {
@@ -52,6 +60,7 @@ resource "aws_instance" "this" {
   # ssm configuration
   iam_instance_profile = aws_iam_instance_profile.this.id
 
+  # Dynamic configuration sent through user-data
   user_data = var.user_data
 
   # root volume configuration

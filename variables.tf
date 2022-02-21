@@ -11,6 +11,13 @@ variable "az" {
   description = "Availability zone to use for deployment."
   type        = string
 }
+
+variable "cloudwatch_agent_enabled" {
+  description = "Enable the CloudWatch agent"
+  type        = bool
+  default     = false
+}
+
 variable "instance_type" {
   description = "Instance type used for deployment."
   type        = string
